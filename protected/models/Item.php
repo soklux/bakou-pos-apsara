@@ -127,6 +127,7 @@ class Item extends CActiveRecord
             'inventories' => array(self::HAS_MANY, 'Inventory', 'trans_items'),
             'category' => array(self::BELONGS_TO, 'Category', 'category_id'),
             'supplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_id'),
+            'author' => array(self::BELONGS_TO, 'Author', 'author_id'),
             //'unit' => array(self::BELONGS_TO, 'ItemUnit', 'unit_id'),
             'sales' => array(self::MANY_MANY, 'Sale', 'sale_item(item_id, sale_id)'),
         );

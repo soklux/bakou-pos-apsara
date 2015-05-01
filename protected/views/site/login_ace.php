@@ -10,8 +10,8 @@ $this->pageTitle=Yii::app()->name . ' - Login';
             <div class="center">
                 <h1>
                     <i class="ace-icon fa fa-leaf green"></i>
-                    <span class="red">POS</span>
-                    <span class="white" id="id-text2">Application</span>
+                    <span class="red">APSARA</span>
+                    <span class="white" id="id-text2">Bookshop</span>
                 </h1>
                 <h4 class="blue" id="id-company-text">&copy; Bakou System</h4>
             </div>

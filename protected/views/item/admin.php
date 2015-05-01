@@ -104,6 +104,7 @@ $('.search-form form').submit(function(){
             array(
                 'name' => 'author',
                 'header' => 'Author',
+                'value' => '$data->author_id==null? " " : $data->author->author_name',
             ),
             /*
             array('name'=>'description',

@@ -32,7 +32,7 @@
         <?php echo $form->dropDownListControlGroup($model,'profit_margin', ProfitMargin::model()->getProfitMargin(),
                 array('class'=>'span3','empty' => '-- Select Profit Margin --','data-url'=>Yii::app()->createUrl('item/f5pricetier'))); ?>
 
-	    <?php echo $form->textFieldControlGroup($model,'unit_price',array('class'=>'span3')); ?>
+	    <?php //echo $form->textFieldControlGroup($model,'unit_price',array('class'=>'span3')); ?>
         
         <div id="pricetier_cart">
             <?php foreach($price_tiers as $i=>$price_tier): ?>

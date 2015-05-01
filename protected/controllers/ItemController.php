@@ -173,10 +173,16 @@ class ItemController extends Controller
                 //$model->quantity = $qty;  //A buggy was not noticed every update reset item to zero EM EUY
                 $publisher_name=$_POST['Item']['publisher_id'];
                 $category_name=$_POST['Item']['category_id'];
+                $author_name = $_POST['Item']['author_id'];
                 
                 $publisher_id=  Publisher::model()->savePublisher($publisher_name);
                 if ($publisher_id!==null) {
                     $model->publisher_id = $publisher_id;
+                }
+
+                $author_id = Author::model()->saveAuthor($author_name);
+                if ($author_id !== null) {
+                    $model->author_id = $author_id;
                 }
                 
                 $category_id=Category::model()->saveCategory($category_name);

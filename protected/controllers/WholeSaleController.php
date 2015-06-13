@@ -178,9 +178,9 @@ class WholeSaleController extends Controller
     {
         if ( Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest ) {
             $client_id = $_POST['SaleItem']['client_id'];
-            $client_price_tier = Client::model()->findByPk($client_id);
+            $client = Client::model()->findByPk($client_id);
             Yii::app()->wshoppingCart->setCustomer($client_id);
-            Yii::app()->wshoppingCart->setPriceTier($client_price_tier->price_tier_id);
+            Yii::app()->wshoppingCart->setPriceTier($client->price_tier_id);
             $this->reload();
         } else {
             throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');

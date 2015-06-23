@@ -218,7 +218,7 @@
         </div>
 
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="Item_author_id"><?php echo Yii::t('app','Author') ?></label>
+        <label class="col-sm-3 control-label" for="Item_author_id"><?php echo Yii::t('app','Author / Brand') ?></label>
         <div class="col-sm-9">
             <?php
             $this->widget('yiiwheels.widgets.select2.WhSelect2', array(
@@ -321,13 +321,12 @@
       }
 });
 
-/*
 window.setTimeout(function() {
-    $(".alert").fadeTo(1500, 0).slideUp(500, function(){
+    $(".alert").fadeTo(1000, 0).slideUp(1000, function(){
         $(this).remove(); 
     });
-}, 2000);
-*/
+}, 1000);
+
  </script>
 
  <?php 

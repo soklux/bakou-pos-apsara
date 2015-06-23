@@ -321,6 +321,18 @@ class ItemController extends Controller
             if (isset($_GET['Item']))
                 $model->attributes = $_GET['Item'];
 
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('pageSize',(int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['archivedItem'])) {
+                Yii::app()->user->setState('archived',$_GET['archivedItem']);
+                unset($_GET['archivedItem']);
+            }
+
+            $model->item_archived = Yii::app()->user->getState('archived', Yii::app()->params['defaultArchived']);
+
             $this->render('admin', array(
                 'model' => $model,
             ));

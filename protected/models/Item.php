@@ -47,6 +47,7 @@ class Item extends CActiveRecord
     public $promo_start_date;
     public $promo_end_date;
     public $profit_margin;
+    public $item_archived;
 
     private $_active_status = '1';
     private $_inactive_status = '0';
@@ -166,6 +167,7 @@ class Item extends CActiveRecord
             'is_expire' => Yii::t('app', 'Is Expire ?'),
             'count_interval' => Yii::t('app', 'Count Interval'),
             'profit_margin' => Yii::t('app', 'Profit Margin'),
+            'author' => Yii::t('app', 'Author / Brand'),
         );
     }
 
@@ -196,23 +198,25 @@ class Item extends CActiveRecord
         //$criteria->compare('description',$this->description,true);
         //$criteria->compare('status',$this->status);
 
-        //$criteria->addCondition("name LIKE :t OR item_number LIKE :d");
-        //$criteria->params[':t'] = $this->name;
-        //$criteria->params[':d'] = $this->name;
-
-        $criteria->condition = 't.name like :name OR t.item_number like :name OR category.name like :name';
-        $criteria->params = array(':name' => '%' . $this->name . '%', ':item_number' => $this->name . '%');
-
-        //$criteria->addSearchCondition('status',$this->_active_status);
-
-        //$criteria->condition='deleted=:is_deleted';
-        //$criteria->params=array(':is_deleted'=>$this::_item_not_deleted);
+        if  ( Yii::app()->user->getState('archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 't.name LIKE :name OR t.item_number LIKE :name';
+            $criteria->params = array(
+                ':name' => '%' . $this->name . '%',
+                ':item_number' => $this->name . '%'
+            );
+        } else {
+            $criteria->condition = 't.status=:active_status AND (t.name LIKE :name OR t.item_number like :name)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':name' => '%' . $this->name . '%',
+                ':item_number' => $this->name . '%'
+            );
+        }
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
-                'pageSize' => Yii::app()->settings->get('item',
-                    'itemNumberPerPage') == '' ? false : Yii::app()->settings->get('item', 'itemNumberPerPage'),
+                'pageSize' => Yii::app()->user->getState('pageSize',Yii::app()->params['defaultPageSize']),
             ),
             'sort' => array('defaultOrder' => 't.name')
         ));

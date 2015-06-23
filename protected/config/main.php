@@ -199,15 +199,16 @@ return array(
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
-	'params'=>array(
-		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
-                'sale_cancel_status'=>'0',
-                'sale_complete_status'=>'1',
-                'sale_suspend_status'=>'2',
-                '_active_status'=>'1',
-                '_inactive_status'=>'0',
-	),
-    
-        'catchAllRequest'=>file_exists(dirname(__FILE__).'/.maintenance.php') && !(isset($_COOKIE['secret']) && $_COOKIE['secret']=="password") ? array('maintenance/index') : null,
-        );
+    'params' => array(
+        // this is used in contact page
+        'adminEmail' => 'webmaster@example.com',
+        'sale_cancel_status' => '0',
+        'sale_complete_status' => '1',
+        'sale_suspend_status' => '2',
+        '_active_status' => '1',
+        '_inactive_status' => '0',
+        'active_status' => '1',
+        'inactive_status' => '0',
+    ),
+    'catchAllRequest' => file_exists(dirname(__FILE__) . '/.maintenance.php') && !(isset($_COOKIE['secret']) && $_COOKIE['secret'] == "password") ? array('maintenance/index') : null,
+);

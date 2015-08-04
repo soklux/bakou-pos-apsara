@@ -167,7 +167,7 @@ class Item extends CActiveRecord
             'is_expire' => Yii::t('app', 'Is Expire ?'),
             'count_interval' => Yii::t('app', 'Count Interval'),
             'profit_margin' => Yii::t('app', 'Profit Margin'),
-            'author' => Yii::t('app', 'Author / Brand'),
+            'author_id' => Yii::t('app', 'Author / Brand'),
         );
     }
 
@@ -182,8 +182,13 @@ class Item extends CActiveRecord
 
         $criteria = new CDbCriteria;
 
-        $criteria->with = array('category');
-        $criteria->compare('id', $this->id);
+        //$criteria->with = array('category');
+        //$criteria->with = array('author');
+        $criteria->with = array(
+            'category' => array('alias'=> 't1', 'together' => true, ),
+            'author' => array('alias'=> 't2', 'together' => true, ),
+        );
+        //$criteria->compare('id', $this->id);
         //$criteria->compare('name',$this->name,true);
         //$criteria->compare('item_number',$this->item_number,true);
         //$criteria->compare('category_id',$this->category_id);
@@ -213,10 +218,17 @@ class Item extends CActiveRecord
             );
         }
 
+        $criteria->compare('t.name',$this->name,true);
+        $criteria->compare('category_id',$this->category_id);
+        $criteria->compare('author_id',$this->author_id);
+        $criteria->compare('t.quantity',$this->quantity);
+        $criteria->compare('t.location',$this->location,true);
+
+
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
-                'pageSize' => Yii::app()->user->getState('pageSize',Yii::app()->params['defaultPageSize']),
+                'pageSize' => Yii::app()->user->getState('pageSize',Yii::app()->settings->get('item', 'itemNumberPerPage')),
             ),
             'sort' => array('defaultOrder' => 't.name')
         ));

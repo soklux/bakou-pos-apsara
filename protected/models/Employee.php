@@ -90,7 +90,7 @@ class Employee extends CActiveRecord
 			'country_code' => Yii::t('app','Country Code'), //'Country Code',
 			'email' => Yii::t('app','Email'), //'Email',
 			'notes' => Yii::t('app','Notes'), //'Notes',
-                        'search' => Yii::t('app','Search') . Yii::t('app','Employee'),
+			'search' => Yii::t('app','Search') . Yii::t('app','Employee'),
 		);
 	}
 

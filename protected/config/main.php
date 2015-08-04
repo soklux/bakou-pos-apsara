@@ -114,8 +114,8 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=bakou_pos_apsara',
 			'emulatePrepare' => true,
-			'username' => 'sys',
-			'password' => 'sys123',
+			'username' => 'homestead',
+			'password' => 'secret',
 			'charset' => 'utf8mb4',
                         'schemaCachingDuration' => 180,
                         'initSQLs'=>array(

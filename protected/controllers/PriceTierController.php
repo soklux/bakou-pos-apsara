@@ -236,6 +236,18 @@ class PriceTierController extends Controller
             $model->attributes = $_GET['PriceTier'];
         }
 
+        if (isset($_GET['pageSize'])) {
+            Yii::app()->user->setState('pageSizePriceTier',(int)$_GET['pageSize']);
+            unset($_GET['pageSize']);
+        }
+
+        if (isset($_GET['archived'])) {
+            Yii::app()->user->setState('archivedPriceTier',$_GET['archived']);
+            unset($_GET['archived']);
+        }
+
+        $model->archived = Yii::app()->user->getState('archivedPriceTier', Yii::app()->params['defaultArchived']);
+
         $this->render('admin', array(
             'model' => $model,
         ));

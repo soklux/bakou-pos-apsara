@@ -12,6 +12,9 @@
  */
 class ProfitMargin extends CActiveRecord
 {
+	public $search;
+	public $archived;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -36,7 +39,7 @@ class ProfitMargin extends CActiveRecord
                         array('modified_date', 'default','value'=> date('Y-m-d H:i:s'),'setOnEmpty'=>false,'on'=>'update'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, created_date, modified_date, modified_by', 'safe', 'on'=>'search'),
+			array('id, name, search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,9 +88,10 @@ class ProfitMargin extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('created_date',$this->created_date,true);
-		$criteria->compare('modified_date',$this->modified_date,true);
-		$criteria->compare('modified_by',$this->modified_by);
+		$criteria->compare('name',$this->search,true);
+		//$criteria->compare('created_date',$this->created_date,true);
+		//$criteria->compare('modified_date',$this->modified_date,true);
+		//$criteria->compare('modified_by',$this->modified_by);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -104,16 +108,16 @@ class ProfitMargin extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        protected function getProfitMarginInfo()
-        {
-            return $this->name;    
-        }
-        
-        public function getProfitMargin()
-        {
-            //$model = Category::model()->findAll();
-            $sql = "SELECT t1.id,CONCAT(t1.name,' ',t2.profit_name) `name`
+
+	protected function getProfitMarginInfo()
+	{
+		return $this->name;
+	}
+
+	public function getProfitMargin()
+	{
+		//$model = Category::model()->findAll();
+		$sql = "SELECT t1.id,CONCAT(t1.name,' ',t2.profit_name) `name`
                     FROM profit_margin t1 JOIN 
                             (SELECT pm.`id`,GROUP_CONCAT(CONCAT(pt.`tier_name`, ' : ' , ppt.`profit`) ORDER BY pt.id SEPARATOR ' | ') profit_name
                              FROM `profit_margin` pm , profit_price_tier ppt , price_tier pt
@@ -123,9 +127,10 @@ class ProfitMargin extends CActiveRecord
              
                             ) t2 ON t1.id = t2.id
                     ";
-            
-            $model = Yii::app()->db->createCommand($sql)->queryAll(true);
-            $list  = CHtml::listData($model,'id','name');
-            return $list;
-        }
+
+		$model = Yii::app()->db->createCommand($sql)->queryAll(true);
+		$list = CHtml::listData($model, 'id', 'name');
+
+		return $list;
+	}
 }

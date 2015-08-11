@@ -11,9 +11,9 @@
  */
 class PriceTier extends CActiveRecord
 {
-        const _price_tier_active = '1'; 
-        const _price_tier_inactive = '0';
-    
+    public $search;
+    public $archived;
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -37,7 +37,7 @@ class PriceTier extends CActiveRecord
 			array('modified_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, tier_name, modified_date, status', 'safe', 'on'=>'search'),
+			array('id, tier_name,status, search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,18 +83,28 @@ class PriceTier extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('tier_name',$this->tier_name,true);
-		//$criteria->compare('modified_date',$this->modified_date,true);
-		//$criteria->compare('status',$this->deleted);
-                
-                //$criteria->addSearchCondition('status',$this::_price_tier_active);
-                
-                //$criteria->condition="deleted=:deleted";
-                //$criteria->params = array(':deleted' => $this::_price_tier_active);
+		//$criteria->compare('id',$this->id);
+		//$criteria->compare('tier_name',$this->tier_name,true);
+
+        if  ( Yii::app()->user->getState('archivedPriceTier', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 't.tier_name LIKE :name';
+            $criteria->params = array(
+                ':name' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 't.status=:active_status AND (t.tier_name LIKE :name)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':name' => '%' . $this->search . '%',
+            );
+        }
+
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('pageSizePriceTier',Yii::app()->settings->get('item', 'itemNumberPerPage')),
+            ),
 		));
 	}
 
@@ -108,74 +118,91 @@ class PriceTier extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function deletePriceTeir($id)
-        {
-            PriceTier::model()->updateByPk((int)$id,array('status'=>$this::_price_tier_inactive));
-        }
-        
-        public function undodeletePriceTeir($id)
-        {
-            PriceTier::model()->updateByPk((int)$id,array('status'=>$this::_price_tier_active));
-        }
-        
-        protected function getPriceTierInfo()
-        {
-            return $this->tier_name;
-        }
-        
-        public function getPriceTier()
-        {
-            $model = PriceTier::model()->findAll(array('order'=>'id','condition'=>'status=:active_status','params'=>array(':active_status'=>$this::_price_tier_active)));
-            $list  = CHtml::listData($model , 'id', 'PriceTierInfo');
-            return $list;
-        }
-        
-        public function getListPriceTier()
-        {
-            $sql="SELECT id tier_id,tier_name,null price FROM `price_tier` WHERE status=:active_status ORDER BY id"; 
-            $result=Yii::app()->db->createCommand($sql)->queryAll(true,array(':active_status'=>$this::_price_tier_active));
-            return $result;
-        }
-        
-        public function getListProfitPriceTier($profit_margin_id,$cost_price)
-        {
-            $sql="SELECT pt.id tier_id,tier_name,:cost_price + (:cost_price * ppt.`profit`)/100 price 
+
+    public function deletePriceTeir($id)
+    {
+        PriceTier::model()->updateByPk((int)$id, array('status' => $this::_price_tier_inactive));
+    }
+
+    public function undodeletePriceTeir($id)
+    {
+        PriceTier::model()->updateByPk((int)$id, array('status' => Yii::app()->params['active_status']));
+    }
+
+    protected function getPriceTierInfo()
+    {
+        return $this->tier_name;
+    }
+
+    public function getPriceTier()
+    {
+        $model = PriceTier::model()->findAll(array(
+            'order' => 'id',
+            'condition' => 'status=:active_status',
+            'params' => array(':active_status' => Yii::app()->params['active_status'])
+        ));
+        $list = CHtml::listData($model, 'id', 'PriceTierInfo');
+
+        return $list;
+    }
+
+    public function getListPriceTier()
+    {
+        $sql = "SELECT id tier_id,tier_name,null price FROM `price_tier` WHERE status=:active_status ORDER BY id";
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(':active_status' => Yii::app()->params['active_status']));
+
+        return $result;
+    }
+
+    public function getListProfitPriceTier($profit_margin_id, $cost_price)
+    {
+        $sql = "SELECT pt.id tier_id,tier_name,:cost_price + (:cost_price * ppt.`profit`)/100 price
                   FROM `price_tier` pt LEFT JOIN profit_price_tier ppt ON ppt.`price_tier_id`=pt.id
                                         and ppt.profit_margin_id=:profit_margin_id
-                  WHERE STATUS=:active_status 
+                  WHERE STATUS=:active_status
                   ORDER BY pt.id";
-            $result=Yii::app()->db->createCommand($sql)->queryAll(true,array(':cost_price' => $cost_price,':profit_margin_id' => $profit_margin_id,':active_status'=>$this::_price_tier_active));
-            return $result;
-        }
-        
-        public function getListPriceTierUpdate($item_id)
-        {
-            $sql="SELECT pt.id tier_id,pt.tier_name,price 
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':cost_price' => $cost_price,
+            ':profit_margin_id' => $profit_margin_id,
+            ':active_status' => Yii::app()->params['active_status']
+        ));
+
+        return $result;
+    }
+
+    public function getListPriceTierUpdate($item_id)
+    {
+        $sql = "SELECT pt.id tier_id,pt.tier_name,price
                   FROM price_tier pt LEFT JOIN item_price_tier ipt ON ipt.`price_tier_id`=pt.id 
                             AND ipt.`item_id`=:item_id
                   WHERE pt.status=:status
-                  ORDER BY pt.id"; 
-            
-            $result=Yii::app()->db->createCommand($sql)->queryAll(true,array(':item_id' =>(int)$item_id,':status'=>$this::_price_tier_active));
-            return $result;
-        }
-        
-        public function getProfitPriceTierUpdate($profit_margin_id)
-        {
-            $sql="SELECT pt.id tier_id,pt.tier_name,ppt.profit price
+                  ORDER BY pt.id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(':item_id' => (int)$item_id, ':status' => Yii::app()->params['active_status']));
+
+        return $result;
+    }
+
+    public function getProfitPriceTierUpdate($profit_margin_id)
+    {
+        $sql = "SELECT pt.id tier_id,pt.tier_name,ppt.profit price
                   FROM price_tier pt LEFT JOIN profit_price_tier ppt ON ppt.`price_tier_id`=pt.id 
                             AND ppt.`profit_margin_id`=:profit_margin_id
                   WHERE pt.status=:status          
-                  ORDER BY pt.id"; 
-            
-            $result=Yii::app()->db->createCommand($sql)->queryAll(true,array(':profit_margin_id' => $profit_margin_id, ':status'=>$this::_price_tier_active));
-            return $result;
-        }
-        
-        public function checkExists() {
-            return PriceTier::model()->count('status=:active_status',array(':active_status'=>$this::_price_tier_active));
-        }
+                  ORDER BY pt.id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(':profit_margin_id' => $profit_margin_id, ':status' => Yii::app()->params['active_status']));
+
+        return $result;
+    }
+
+    public function checkExists()
+    {
+        return PriceTier::model()->count('status=:active_status', array(':active_status' => Yii::app()->params['active_status']));
+    }
         
        
 }

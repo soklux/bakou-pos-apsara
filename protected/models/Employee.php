@@ -7,6 +7,7 @@
  * @property integer $id
  * @property string $first_name
  * @property string $last_name
+ * @property date $dob
  * @property string $mobile_no
  * @property string $adddress1
  * @property string $address2
@@ -22,13 +23,14 @@
  */
 class Employee extends CActiveRecord
 {
-	
-        public $login_id;
-        public $image;
-        public $search;
-        
-        private $employee_active = '1';
-        private $employee_inactive = '0'; 
+
+    public $login_id;
+    public $image;
+    public $search;
+    public $day; //Day : DD
+    public $month; // Month : MM
+    public $year; // Year - YYYY
+    public $employee_archived;
     
         /**
 	 * @return string the associated database table name
@@ -54,10 +56,11 @@ class Employee extends CActiveRecord
 			array('country_code', 'length', 'max'=>2),
 			array('email', 'length', 'max'=>30),
 			array('status', 'length', 'max'=>1),
-			array('notes', 'safe'),
+            array('dob ', 'date', 'format'=>array('yyyy-MM-dd'), 'allowEmpty'=>true),
+			array('notes, dob, day, month, year', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, first_name, last_name, mobile_no, adddress1, address2, city_id, country_code, email, notes, status', 'safe', 'on'=>'search'),
+			array('id, first_name, last_name, dob, mobile_no, adddress1, address2, city_id, country_code, email, notes, status, search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -77,22 +80,23 @@ class Employee extends CActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'first_name' => Yii::t('app','First Name'), //'First Name',
-			'last_name' => Yii::t('app','Last Name'), //'Last Name',
-			'mobile_no' => Yii::t('app','Mobile No'), //'Mobile No',
-			'adddress1' => Yii::t('app','Address1'), //'Adddress1',
-			'address2' => Yii::t('app','Address2'), //Address2',
-			'city_id' => Yii::t('app','City'), //'City',
-			'country_code' => Yii::t('app','Country Code'), //'Country Code',
-			'email' => Yii::t('app','Email'), //'Email',
-			'notes' => Yii::t('app','Notes'), //'Notes',
-			'search' => Yii::t('app','Search') . Yii::t('app','Employee'),
-		);
-	}
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'first_name' => Yii::t('app', 'First Name'), //'First Name',
+            'last_name' => Yii::t('app', 'Last Name'), //'Last Name',
+            'mobile_no' => Yii::t('app', 'Mobile No'), //'Mobile No',
+            'adddress1' => Yii::t('app', 'Address1'), //'Adddress1',
+            'address2' => Yii::t('app', 'Address2'), //Address2',
+            'city_id' => Yii::t('app', 'City'), //'City',
+            'country_code' => Yii::t('app', 'Country Code'), //'Country Code',
+            'email' => Yii::t('app', 'Email'), //'Email',
+            'notes' => Yii::t('app', 'Notes'), //'Notes',
+            'search' => Yii::t('app', 'Search') . Yii::t('app', 'Employee'),
+            'dob' => Yii::t('app','Date of Birth'),
+        );
+    }
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -123,20 +127,37 @@ class Employee extends CActiveRecord
 		//$criteria->compare('email',$this->email,true);
 		//$criteria->compare('notes',$this->notes,true);
 		//$criteria->compare('status',$this->status,true);
-                
-                if ($this->search) {
-                
-                    $criteria->condition="(first_name=:search or last_name=:search or concat(first_name,last_name)=:fullname or concat(last_name,first_name)=:fullname  or mobile_no like :mobile_no)";
-                    $criteria->params = array(
-                                ':search' => $this->search, 
-                                ':fullname' => preg_replace('/\s+/', '',$this->search),
-                                ':mobile_no' => '%' . $this->search . '%',
-                    );
-                }
+
+       /* if ($this->search) {
+
+            $criteria->condition = "(first_name=:search or last_name=:search or concat(first_name,last_name)=:fullname or concat(last_name,first_name)=:fullname  or mobile_no like :mobile_no)";
+            $criteria->params = array(
+                ':search' => $this->search,
+                ':fullname' => preg_replace('/\s+/', '', $this->search),
+                ':mobile_no' => '%' . $this->search . '%',
+            );
+        } elseif (!Yii::app()->user->isAdmin) {
+            $criteria->condition = "id not in (1,2)";
+        }*/
+
+        if ( Yii::app()->user->getState('employee_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'first_name like :search OR last_name like :search';
+            $criteria->params = array(
+                ':search' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (first_name like :search OR last_name like :search or mobile_no like :search)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
+            );
+        }
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-                        //'sort'=>array( 'defaultOrder'=>'first_name'),
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('employeePageSize', Common::defaultPageSize()),
+            ),
 		));
 	}
 
@@ -150,15 +171,127 @@ class Employee extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-        
-        public function deleteEmployee($id)
-        {
-            Employee::model()->updateByPk((int)$id,array('status'=>$this->employee_inactive));
-        }
 
-        public function undodeleteEmployee($id)
-        {
-            Employee::model()->updateByPk((int)$id,array('status'=>$this->employee_active));
+    public function deleteEmployee($id)
+    {
+        Employee::model()->updateByPk((int)$id, array('status' => Yii::app()->params['inactive_status']));
+        $user = RbacUser::model()->find('employee_id=:employee_id' , array(':employee_id' => $id));
+        $user->status = Yii::app()->params['inactive_status'];
+        $user->save();
+    }
+
+    public function undodeleteEmployee($id)
+    {
+        Employee::model()->updateByPk((int)$id, array('status' => Yii::app()->params['active_status']));
+        $user = RbacUser::model()->find('employee_id=:employee_id' , array(':employee_id' => $id));
+        $user->status = Yii::app()->params['active_status'];
+        $user->save();
+    }
+
+    protected function getEmployeeInfo()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+
+    }
+
+    public function getEmployee()
+    {
+        $model = Employee::model()->findAll();
+        $list  = CHtml::listData($model , 'id', 'EmployeeInfo');
+        return $list;
+    }
+
+    /*
+     * This is to get Employee but as Sale Representative
+     */
+    public function getEmpRep($employee_id)
+    {
+        $model = Employee::model()->findAll(
+            array('select' => '*',
+                'condition' => 'id not in ("1","2") and id<>:employee_id',
+                 'params'=>array(':employee_id' => $employee_id)
+                ,
+            ));
+        $list  = CHtml::listData($model , 'id', 'EmployeeInfo');
+        return $list;
+    }
+
+    protected function afterFind()
+    {
+        $dob = strtotime($this->dob);
+
+        $this->day = date('d',$dob);
+        $this->month = date('m',$dob);
+        $this->year = date('Y',$dob);
+        return parent::afterFind();
+    }
+
+    public static function employeeByID($id)
+    {
+        $model = Employee::model()->findByPk($id);
+
+        return isset($model) ? $model : null;
+    }
+
+    public static function itemAlias($type, $code = null)
+    {
+
+        $_items = array(
+            'day' => array(
+                '01' => '01',
+                '02' => '02',
+                '03' => '03',
+                '04' => '04',
+                '05' => '05',
+                '06' => '06',
+                '07' => '07',
+                '08' => '08',
+                '09' => '09',
+                '10' => '10',
+                '11' => '11',
+                '12' => '12',
+                '13' => '13',
+                '14' => '14',
+                '15' => '15',
+                '16' => '16',
+                '17' => '17',
+                '18' => '18',
+                '19' => '19',
+                '20' => '20',
+                '21' => '21',
+                '22' => '22',
+                '23' => '23',
+                '24' => '24',
+                '25' => '25',
+                '26' => '26',
+                '27' => '27',
+                '28' => '28',
+                '29' => '29',
+                '30' => '30',
+                '31' => '31',
+            ),
+            'month' => array(
+                '01' => Yii::t('app','January'),
+                '02' => Yii::t('app','February'),
+                '03' => Yii::t('app','March'),
+                '04' => Yii::t('app','April'),
+                '05' => Yii::t('app','May'),
+                '06' => Yii::t('app','June'),
+                '07' => Yii::t('app','July'),
+                '08' => Yii::t('app','August'),
+                '09' => Yii::t('app','September'),
+                '10' => Yii::t('app','October'),
+                '11' => Yii::t('app','November'),
+                '12' => Yii::t('app','December'),
+            ),
+            'year' => array_combine(range(date("Y"), 1910), range(date("Y"), 1910)),  //http://stackoverflow.com/questions/2807394/php-years-array
+        );
+
+        if (isset($code)) {
+            return isset($_items[$type][$code]) ? $_items[$type][$code] : false;
+        } else {
+            return isset($_items[$type]) ? $_items[$type] : false;
         }
+    }
         
 }

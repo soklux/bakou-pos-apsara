@@ -4,6 +4,13 @@
 }
 </style>
 
+<?php
+    $this->breadcrumbs=array(
+    Yii::t('app','Price Tier')=>array('admin'),
+    Yii::t('app','Manage'),
+    );
+?>
+
 <div class="row" id="pricetier_cart">
 
     <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
@@ -12,128 +19,128 @@
                   'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     )); ?>
 
-    <?php
+        <?php
 
-    $this->breadcrumbs=array(
-            Yii::t('app','Price Tier')=>array('admin'),
-            Yii::t('app','Manage'),
-    );
-
-    Yii::app()->clientScript->registerScript('search', "
-    $('.search-button').click(function(){
-            $('.search-form').toggle();
-            return false;
-    });
-    $('.search-form form').submit(function(){
-            $('#price-tier-grid').yiiGridView('update', {
-                    data: $(this).serialize()
-            });
-            return false;
-    });
-    ");
-    ?>
+        Yii::app()->clientScript->registerScript('search', "
+        $('.search-button').click(function(){
+                $('.search-form').toggle();
+                return false;
+        });
+        $('.search-form form').submit(function(){
+                $('#price-tier-grid').yiiGridView('update', {
+                        data: $(this).serialize()
+                });
+                return false;
+        });
+        ");
+        ?>
 
 
-    <?php echo TbHtml::linkButton(Yii::t('app','Search'),array('class'=>'search-button btn','size'=>TbHtml::BUTTON_SIZE_SMALL,'icon'=>'ace-icon fa fa-search',)); ?>
-    <div class="search-form" style="display:none">
-    <?php $this->renderPartial('_search',array(
-            'model'=>$model,
-    )); ?>
-    </div><!-- search-form -->
+        <?php $this->widget('ext.modaldlg.EModalDlg'); ?>
 
-    <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
-    <?php echo TbHtml::linkButton(Yii::t( 'app', 'Add New' ),array(
-            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-            'size'=>TbHtml::BUTTON_SIZE_SMALL,
-            'icon'=>'ace-icon fa fa-plus white',
-            'url'=>$this->createUrl('create'),
-            'class'=>'update-dialog-open-link',
-            'data-refresh-grid-id'=>'price-tier-grid',
-            'data-update-dialog-title' => Yii::t('app','New Price Tier'),
+        <div class="page-header">
+            <!-- Admin Header layouts.admin._header -->
+            <?php $this->renderPartial('//layouts/admin/_header',array(
+                'model' => $model,
+                'check_access' => 'item.create',
+                'create_url' => 'create',
+                'class' => 'update-dialog-open-link',
+                'grid_id' => 'price-tier-grid',
+                'modal_title' => 'New Price Tier',
+            ));?>
 
-    )); ?>
+            &nbsp;&nbsp;
 
-    <?php $this->widget('yiiwheels.widgets.grid.WhGridView',array(
-            'id'=>'price-tier-grid',
-            'type' => TbHtml::GRID_TYPE_HOVER,
-            'fixedHeader' => true,
-            //'responsiveTable' => true,
-            'dataProvider'=>$model->search(),
-            //'filter'=>$model,
-            'columns'=>array(
-                    'id',
-                    'tier_name',
-                    array('name'=>'status',
-                        'type'=>'raw',
-                        'value'=>'$data->status==1 ? TbHtml::labelTb("Activated", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("De-Activated", array("color" => TbHtml::LABEL_COLOR_WARNING))', 
-                    ),
-                    'modified_date',
-                    //'deleted',
-                    array(
-                        'class'=>'bootstrap.widgets.TbButtonColumn',
-                        'header'=> Yii::t('app','Edit'),
-                        'template'=>'<div class="btn-group">{update}{delete}{undeleted}</div>',
-                        //'htmlOptions'=>array('class'=>'btn-group'),
-                        'buttons' => array(
-                            'update' => array(
-                              'click' => 'updateDialogOpen',
-                              'label'=>'Update Price Tier',
-                              'icon'=>'ace-icon fa fa-edit',  
-                              'options' => array(
-                                  'data-update-dialog-title' => Yii::t('app','Update Price Tier'),
-                                  'data-refresh-grid-id'=>'supplier-grid',
-                                  'class'=>'btn btn-xs btn-primary',
-                                ), 
-                            ),
-                            'delete' => array(
-                                'label'=>Yii::t('app','Delete Price Tier'),
-                                'options' => array(
-                                    'data-update-dialog-title' => Yii::t('app','Update Item'),
-                                    'titile'=>'Edit Item',
-                                    'class'=>'btn btn-xs btn-danger',
+            <?php echo CHtml::activeCheckBox($model, 'archived', array(
+                'value' => 1,
+                'uncheckValue' => 0,
+                'checked' => ($model->archived == 'false') ? false : true,
+                'onclick' => "$.fn.yiiGridView.update('price-tier-grid',{data:{archived:$(this).is(':checked')}});"
+            )); ?>
+            Show archived/deleted <?= Yii::t('app','Price Tier'); ?>
+        </div>
+
+
+        <!-- Flash message layouts.partial._flash_message -->
+        <?php $this->renderPartial('//layouts/alert/_flash'); ?>
+
+
+        <?php
+        $pageSizeDropDown = CHtml::dropDownList(
+            'pageSize',
+            Yii::app()->user->getState('pageSizePriceTier', Common::defaultPageSize()) ,
+            Common::arrayFactory('page_size'),
+            array(
+                'class' => 'change-pagesize',
+                'onchange' => "$.fn.yiiGridView.update('price-tier-grid',{data:{pageSize:$(this).val()}});",
+            )
+        );
+        ?>
+
+
+        <?php $this->widget('yiiwheels.widgets.grid.WhGridView',array(
+                'id'=>'price-tier-grid',
+                'type' => TbHtml::GRID_TYPE_HOVER,
+                'fixedHeader' => true,
+                'template' => "{items}\n{summary}\n{pager}",
+                'summaryText' => 'Showing {start}-{end} of {count} entries ' . $pageSizeDropDown . ' rows per page',
+                'htmlOptions' => array('class' => 'table-responsive panel'),
+                'dataProvider'=>$model->search(),
+                //'filter'=>$model,
+                'columns'=>array(
+                        //'id',
+                        'tier_name',
+                        array('name'=>'status',
+                            'type'=>'raw',
+                            'value'=>'$data->status==1 ? TbHtml::labelTb("Activated", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("De-Activated", array("color" => TbHtml::LABEL_COLOR_WARNING))',
+                        ),
+                        'modified_date',
+                        //'deleted',
+                        array(
+                            'class'=>'bootstrap.widgets.TbButtonColumn',
+                            'header'=> Yii::t('app','Edit'),
+                            'template'=>'<div class="btn-group">{update}{delete}{undeleted}</div>',
+                            //'htmlOptions'=>array('class'=>'btn-group'),
+                            'buttons' => array(
+                                'update' => array(
+                                  'click' => 'updateDialogOpen',
+                                  'label'=>'Update Price Tier',
+                                  'icon'=>'ace-icon fa fa-edit',
+                                  'options' => array(
+                                      'data-update-dialog-title' => Yii::t('app','Update Price Tier'),
+                                      'data-refresh-grid-id'=>'supplier-grid',
+                                      'class'=>'btn btn-xs btn-primary',
+                                    ),
                                 ),
-                                'visible'=>'$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
-                            ),
-                            'undeleted' => array(
-                                'label'=>Yii::t('app','Undo Delete Price Tier'),
-                                'url'=>'Yii::app()->createUrl("PriceTier/UndoDelete", array("id"=>$data->id))',
-                                'icon'=>'bigger-120 glyphicon-refresh',
-                                'options' => array(
-                                    'class'=>'btn btn-xs btn-warning btn-undodelete',
-                                ), 
-                                'visible'=>'$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
-                            ),
-                         ),
-                    ),
-            ),
-    )); ?>
+                                'delete' => array(
+                                    'label'=>Yii::t('app','Delete Price Tier'),
+                                    'options' => array(
+                                        'data-update-dialog-title' => Yii::t('app','Update Item'),
+                                        'titile'=>'Edit Item',
+                                        'class'=>'btn btn-xs btn-danger',
+                                    ),
+                                    'visible'=>'$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
+                                ),
+                                'undeleted' => array(
+                                    'label'=>Yii::t('app','Restore Price Tier'),
+                                    'url'=>'Yii::app()->createUrl("PriceTier/UndoDelete", array("id"=>$data->id))',
+                                    'icon'=>'bigger-120 glyphicon-refresh',
+                                    'options' => array(
+                                        'class'=>'btn btn-xs btn-warning btn-undodelete',
+                                    ),
+                                    'visible'=>'$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
+                                ),
+                             ),
+                        ),
+                ),
+        )); ?>
 
     <?php $this->endWidget(); ?>
 
 </div>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'undoDelete', "
-        jQuery( function($){
-            $('div#pricetier_cart').on('click','a.btn-undodelete',function(e) {
-                e.preventDefault();
-                if (!confirm('Are you sure you want to do undo delete this Item?')) {
-                    return false;
-                }
-                var url=$(this).attr('href');
-                $.ajax({url:url,
-                        type : 'post',
-                        beforeSend: function() { $('.waiting').show(); },
-                        complete: function() { $('.waiting').hide(); },
-                        success : function(data) {
-                            $.fn.yiiGridView.update('price-tier-grid');
-                            return false;
-                          }
-                    });
-                });
-        });
-      ");
- ?>  
-
-<div class="waiting"><!-- Place at bottom of page --></div>
+<?php $this->renderPartial('//layouts/admin/_footer',array(
+    'main_div_id' => 'pricetier_cart',
+    'grid_id' => 'price-tier-grid',
+));?>

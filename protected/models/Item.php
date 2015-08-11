@@ -48,6 +48,7 @@ class Item extends CActiveRecord
     public $promo_end_date;
     public $profit_margin;
     public $item_archived;
+    public $search;
 
     private $_active_status = '1';
     private $_inactive_status = '0';
@@ -87,7 +88,7 @@ class Item extends CActiveRecord
             ),
             array('name', 'unique'),
             array(
-                'category_id, author_id, publisher_id,supplier_id, unit_id, currency_code,allow_alt_description, is_serialized, is_expire, count_interval, profit_margin',
+                'category_id, author_id, publisher_id,supplier_id, unit_id, currency_code,allow_alt_description, is_serialized, is_expire, count_interval, profit_margin_id',
                 'numerical',
                 'integerOnly' => true
             ),
@@ -110,7 +111,7 @@ class Item extends CActiveRecord
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array(
-                'id, author_id, isbn,publisher_id, name, item_number,unit_id, category_id, supplier_id, currency_code,cost_price, unit_price, quantity, reorder_level, location, allow_alt_description, is_serialized, description, status, promo_price, is_expore, count_interval, profit_margin, publish_date',
+                'id, author_id,search, isbn,publisher_id, name, item_number,unit_id, category_id, supplier_id, currency_code,cost_price, unit_price, quantity, reorder_level, location, allow_alt_description, is_serialized, description, status, promo_price, is_expore, count_interval, profit_margin, publish_date',
                 'safe',
                 'on' => 'search'
             ),
@@ -129,7 +130,7 @@ class Item extends CActiveRecord
             'category' => array(self::BELONGS_TO, 'Category', 'category_id'),
             'supplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_id'),
             'author' => array(self::BELONGS_TO, 'Author', 'author_id'),
-            //'unit' => array(self::BELONGS_TO, 'ItemUnit', 'unit_id'),
+            'profit_margin' => array(self::BELONGS_TO, 'ProfitMargin', 'profit_margin_id'),
             'sales' => array(self::MANY_MANY, 'Sale', 'sale_item(item_id, sale_id)'),
         );
     }
@@ -188,33 +189,19 @@ class Item extends CActiveRecord
             'category' => array('alias'=> 't1', 'together' => true, ),
             'author' => array('alias'=> 't2', 'together' => true, ),
         );
-        //$criteria->compare('id', $this->id);
-        //$criteria->compare('name',$this->name,true);
-        //$criteria->compare('item_number',$this->item_number,true);
-        //$criteria->compare('category_id',$this->category_id);
-        //$criteria->compare('supplier_id',$this->supplier_id);
-        //$criteria->compare('cost_price',$this->cost_price);
-        //$criteria->compare('unit_price',$this->unit_price);
-        //$criteria->compare('quantity',$this->quantity);
-        //$criteria->compare('reorder_level',$this->reorder_level);
-        //$criteria->compare('location',$this->location,true);
-        //$criteria->compare('allow_alt_description',$this->allow_alt_description);
-        //$criteria->compare('is_serialized',$this->is_serialized);
-        //$criteria->compare('description',$this->description,true);
-        //$criteria->compare('status',$this->status);
 
         if  ( Yii::app()->user->getState('archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
             $criteria->condition = 't.name LIKE :name OR t.item_number LIKE :name';
             $criteria->params = array(
-                ':name' => '%' . $this->name . '%',
-                ':item_number' => $this->name . '%'
+                ':name' => '%' . $this->search . '%',
+                ':item_number' => $this->search . '%'
             );
         } else {
             $criteria->condition = 't.status=:active_status AND (t.name LIKE :name OR t.item_number like :name)';
             $criteria->params = array(
                 ':active_status' => Yii::app()->params['active_status'],
-                ':name' => '%' . $this->name . '%',
-                ':item_number' => $this->name . '%'
+                ':name' => '%' . $this->search . '%',
+                ':item_number' => $this->search . '%'
             );
         }
 

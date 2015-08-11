@@ -29,7 +29,7 @@
         
         <?php echo $form->textFieldControlGroup($model,'cost_price',array('class'=>'span3')); ?>
         
-        <?php echo $form->dropDownListControlGroup($model,'profit_margin', ProfitMargin::model()->getProfitMargin(),
+        <?php echo $form->dropDownListControlGroup($model,'profit_margin_id', ProfitMargin::model()->getProfitMargin(),
                 array('class'=>'span3','empty' => '-- Select Profit Margin --','data-url'=>Yii::app()->createUrl('item/f5pricetier'))); ?>
 
 	    <?php //echo $form->textFieldControlGroup($model,'unit_price',array('class'=>'span3')); ?>
@@ -94,7 +94,7 @@
                             'allowClear'=>true,
                             //'minimumInputLength'=>1,
                             'ajax' => array(
-                                'url' => Yii::app()->createUrl('category/GetCategory2/'), 
+                                'url' => Yii::app()->createUrl('Category/GetCategory2/'),
                                 'dataType' => 'json',
                                 'cache'=>true,
                                 'data' => 'js:function(term,page) {
@@ -115,7 +115,7 @@
                                         $.ajax('".$this->createUrl('/category/initCategory')."', {
                                             dataType: 'json',
                                             data: { id: id }
-                                        }).done(function(data) {callback(data);}); //http://www.eha.ee/labs/yiiplay/index.php/en/site/extension?view=select2
+                                        }).done(function(data) {callback(data);});
                                     }
                             }",
                             'createSearchChoice' => 'js:function(term, data) {
@@ -253,7 +253,7 @@
                                         $.ajax('".$this->createUrl('/author/initAuthor')."', {
                                             dataType: 'json',
                                             data: { id: id }
-                                        }).done(function(data) {callback(data);}); //http://www.eha.ee/labs/yiiplay/index.php/en/site/extension?view=select2
+                                        }).done(function(data) {callback(data);});
                                     }
                     }",
                     'createSearchChoice' => 'js:function(term, data) {
@@ -332,7 +332,7 @@ window.setTimeout(function() {
  <?php 
     Yii::app()->clientScript->registerScript( 'profitMarginOption', "
         jQuery( function($){
-            $('div#item_container').on('change','#Item_profit_margin',function(e) {
+            $('div#item_container').on('change','#Item_profit_margin_id',function(e) {
                 e.preventDefault();
                 var profitmarginId=$(this).val();
                 var url =$(this).data('url');

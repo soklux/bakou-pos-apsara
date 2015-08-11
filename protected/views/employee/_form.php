@@ -27,6 +27,23 @@
 
                 <?php echo $form->textFieldControlGroup($model,'mobile_no',array('class'=>'span10','maxlength'=>15)); ?>
 
+                <div class="form-group">
+
+                    <label class="col-sm-3 control-label" for="Employee_dob"><?php echo Yii::t('app','Date of Birth') ?></label>
+
+                    <div class="col-sm-9">
+
+                        <?php echo CHtml::activeDropDownList($model, 'day', Employee::itemAlias('day'), array('prompt' => yii::t('app','Day'))); ?>
+
+                        <?php echo CHtml::activeDropDownList($model, 'month', Employee::itemAlias('month'), array('prompt' => yii::t('app','Month'))); ?>
+
+                        <?php echo CHtml::activeDropDownList($model, 'year', Employee::itemAlias('year'), array('prompt' => yii::t('app','Year'))); ?>
+
+                        <span class="help-block"> <?php echo $form->error($model,'dob'); ?> </span>
+                    </div>
+
+                </div>
+
                 <?php echo $form->textFieldControlGroup($model,'adddress1',array('class'=>'span10','maxlength'=>60)); ?>
 
                 <?php echo $form->textFieldControlGroup($model,'address2',array('class'=>'span10','maxlength'=>60)); ?>
@@ -164,4 +181,5 @@
         </div>
         <?php $this->endWidget(); ?>
 </div>
-        
+
+<?php Yii::app()->clientScript->registerScript('setFocus',  '$("#Employee_first_name").focus();'); ?>

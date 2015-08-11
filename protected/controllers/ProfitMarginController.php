@@ -47,10 +47,23 @@ class ProfitMarginController extends Controller {
      * Displays a particular model.
      * @param integer $id the ID of the model to be displayed
      */
-    public function actionView($id) {
-        $this->render('view', array(
-            'model' => $this->loadModel($id),
-        ));
+    public function actionView($id)
+    {
+        if (Yii::app()->request->isAjaxRequest) {
+
+            Yii::app()->clientScript->scriptMap['*.js'] = false;
+
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => $this->renderPartial('view', array('model' => $this->loadModel($id)), true, false),
+            ));
+
+            Yii::app()->end();
+        } else {
+            $this->render('view', array(
+                'model' => $this->loadModel($id),
+            ));
+        }
     }
 
     /**

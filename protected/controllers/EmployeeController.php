@@ -78,6 +78,11 @@ class EmployeeController extends Controller
                 $model->attributes = $_POST['Employee'];
                 $user->attributes = $_POST['RbacUser'];
                 //$location_id = $_POST['Employee']['location'];
+
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
           
                 // validate BOTH $a and $b
                 $valid = $model->validate();
@@ -109,7 +114,8 @@ class EmployeeController extends Controller
 
                                 $transaction->commit();
                                 Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
-                                $this->redirect(array('view', 'id' => $model->id));
+                                //$this->redirect(array('view', 'id' => $model->id));
+                                $this->redirect(array('admin'));
                             } else {
                                 Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                             }
@@ -134,7 +140,7 @@ class EmployeeController extends Controller
      */
     public function actionUpdate($id)
     {
-         $disabled = "";
+        $disabled = "";
         if (Yii::app()->user->checkAccess('employee.update')) {
 
             $model = $this->loadModel($id);
@@ -168,6 +174,11 @@ class EmployeeController extends Controller
             if (isset($_POST['Employee'])) {
                 $model->attributes = $_POST['Employee'];
                 $user->attributes=$_POST['RbacUser'];
+
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
                 
                 // validate BOTH $a and $b
                 $valid = $model->validate();
@@ -324,6 +335,18 @@ class EmployeeController extends Controller
             $model->unsetAttributes();  // clear any default values
             if (isset($_GET['Employee']))
                 $model->attributes = $_GET['Employee'];
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState('employeePageSize', (int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            if (isset($_GET['archivedEmployee'])) {
+                Yii::app()->user->setState('employee_archived',$_GET['archivedEmployee']);
+                unset($_GET['archivedEmployee']);
+            }
+
+            $model->employee_archived = Yii::app()->user->getState('employee_archived', Yii::app()->params['defaultArchived']);
 
             $this->render('admin', array(
                 'model' => $model,

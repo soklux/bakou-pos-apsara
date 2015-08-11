@@ -1,9 +1,3 @@
-<?php
-/* @var $this ProfitMarginController */
-/* @var $model ProfitMargin */
-/* @var $form TbActiveForm */
-?>
-
 <div class="form">
 
     <?php $form=$this->beginWidget('\TbActiveForm', array(

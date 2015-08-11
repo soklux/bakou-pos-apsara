@@ -252,7 +252,7 @@ class CategoryController extends Controller
         public function actionGetCategory2() { 
             if (isset($_GET['term'])) {
                  $term = trim($_GET['term']);
-                 $ret['results'] = Category::getCategory2($term); //PHP Example · ivaynberg/select2  http://bit.ly/10FNaXD got stuck serveral hoursss :|
+                 $ret['results'] = Category::getCategory2($term); //PHP Example · ivaynberg/select2  http://bit.ly/10FNaXD got stuck serveral hours :|
                  echo CJSON::encode($ret);
                  Yii::app()->end();
 

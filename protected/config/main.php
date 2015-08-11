@@ -209,6 +209,7 @@ return array(
         '_inactive_status' => '0',
         'active_status' => '1',
         'inactive_status' => '0',
+        'defaultArchived' => 'false',
     ),
     'catchAllRequest' => file_exists(dirname(__FILE__) . '/.maintenance.php') && !(isset($_COOKIE['secret']) && $_COOKIE['secret'] == "password") ? array('maintenance/index') : null,
 );

@@ -83,8 +83,9 @@ $this->breadcrumbs = array(
                 'columns' => array(
                     array(
                         'name' => 'item_number',
-                        'header' => 'Item-Code',
+                        'value' => '$data->status=="1" ? $data->item_number : "<s class=\"red\">  $data->item_number </s>" ',
                         'filter' => '',
+                        'type' => 'raw',
                     ),
                     array(
                         'name' => 'name',

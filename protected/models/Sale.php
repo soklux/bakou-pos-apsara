@@ -146,18 +146,18 @@ class Sale extends CActiveRecord
         $model = Sale::model()->findSale($in_sale_id);
        
         $payment_types = '';
-        
+
         /*
         foreach ($payments as $payment_id => $payment) {
             $payment_types = $payment_types . $payment['currency_code'] . ': ' . $payment['payment_amount'] . '<br />';
         } 
-         * 
+         *
         */
 
         $transaction = Yii::app()->db->beginTransaction();
         try {
 
-            // Transaction Date for Inventory, Payement and sale trans date
+            // Transaction Date for Inventory, Payment and sale trans date
             $trans_date = date('Y-m-d H:i:s'); 
             
             //Saving existing Sale Item to Inventory table and removing it out
@@ -176,11 +176,11 @@ class Sale extends CActiveRecord
                 $sale_id = $model->id;
                 $date_paid = $trans_date;
                 
-                // Savnig Sale Item (Sale & Sale Item gotta save firstly even for Suspended Sale)
+                // Saving Sale Item (Sale & Sale Item gotta save firstly even for Suspended Sale)
                 $this->saveSaleItem($items, $sale_id, $employee_id);
                 
-                // We only save Sale Payment, Account Receivable transaction and update Account (oustanding balance) of completed sale transaction
-                if ( $status == self::sale_complete_status ) {
+                // We only save Sale Payment, Account Receivable transaction and update Account (outstanding balance) of completed sale transaction
+                if ( $status == self::sale_complete_status) {
                  
                     $sql="SELECT func_complete_sale(:client_id,:sale_id,:employee_id) sale_id";
                     Yii::app()->db->createCommand($sql)->queryAll(true, array(
@@ -214,7 +214,8 @@ class Sale extends CActiveRecord
         
         return $message;
     }
-    
+
+
     protected function findSale($in_sale_id) 
     {
         if ($in_sale_id) {

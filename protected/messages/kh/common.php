@@ -10,4 +10,3 @@ return array(
     'Body' => 'Contenu',
     'Submit' => 'Soumettez'
 );
-?>

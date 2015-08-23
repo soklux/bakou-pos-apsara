@@ -22,6 +22,16 @@ Class Common
         return $total;
     }
 
+    public static function calTotalAfterDiscount($discount,$price,$qty=1) {
+        $total = 0;
+        if (substr($discount, 0, 1) == '$') {
+            $total+=round($price * $qty - substr($discount, 1), Common::getDecimalPlace(), PHP_ROUND_HALF_DOWN);
+        } else {
+            $total+=round($price * $qty - $price * $qty * $discount / 100, Common::getDecimalPlace(), PHP_ROUND_HALF_DOWN);
+        }
+        return $total;
+    }
+
     public static function arrayFactory($type, $code = null)
     {
 
@@ -81,6 +91,7 @@ Class Common
                 100 => 100,
                 200 => 200,
                 500 => 500,
+                1000 => 1000,
             )
         );
 
@@ -95,5 +106,16 @@ Class Common
     {
         return Yii::app()->user->getState('pageSize', Yii::app()->settings->get('item', 'itemNumberPerPage'));
     }
+
+    public static function getDecimalPlace()
+    {
+        return Yii::app()->settings->get('system', 'decimalPlace') == '' ? 2 : Yii::app()->settings->get('system', 'decimalPlace');
+    }
+
+    public static function getDecimalPlaceRS()
+    {
+        return 0;
+    }
+
     
 }

@@ -1,77 +1,11 @@
-<?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-<?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox',array(
-        'title'         =>  Yii::t('app','Whole Sale Register'),
-        'headerIcon'    => 'menu-icon fa fa-shopping-cart',
-        'headerButtons' => array(
-            TbHtml::buttonGroup(
-                array(
-                    array('label' => Yii::t('app','On-going Sale'),'url' =>Yii::app()->createUrl('wholeSale/ListSuspendedSale/'),'icon'=>'ace-icon fa fa-spinner white'),
-                    array('label'=>' | '),
-                    array('label' => Yii::t('app','New Item'),'url' =>Yii::app()->createUrl('Item/createImage',array('grid_cart'=>'S')),'icon'=>'ace-icon fa fa-plus white'),
-                ),array('color'=>TbHtml::BUTTON_COLOR_PRIMARY,'size'=>TbHtml::BUTTON_SIZE_SMALL)
-            ),
-        ),
-        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-));
-?> 
-<div class="widget-main">
-<div id="itemlookup">
-<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-	'action'=>Yii::app()->createUrl('wholeSale/add'),
-	'method'=>'post',
-        'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
-        'id'=>'add_item_form',
-)); ?>    
-   
-    <?php 
-    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-            'model'=>$model,
-            'attribute'=>'item_id',
-            'source'=>$this->createUrl('request/suggestItem'),
-            //'scriptFile'=>'',
-            //'scriptUrl'=> Yii::app()->theme->baseUrl.'/js/',    
-            'htmlOptions'=>array(
-                'size'=>'35'
-            ),
-            'options'=>array(
-                'showAnim'=>'fold',
-                'minLength'=>'1',
-                'delay' => 10,
-                'autoFocus'=> false,
-                'select'=>'js:function(event, ui) {
-                    event.preventDefault();
-                    $("#SaleItem_item_id").val(ui.item.id);
-                    $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
-                }',
-                //'search' => 'js:function(){ $(".waiting").show(); }',
-                //'open' => 'js:function(){ $(".waiting").hide(); }',
-            ),
-        ));
-    ?>
-   
-    <?php /* echo TbHtml::linkButton('',array(
-        'color'=>TbHtml::BUTTON_COLOR_INFO,
-        'size'=>TbHtml::BUTTON_SIZE_SMALL,
-        'icon'=>'glyphicon-hand-up white',
-        'url'=>$this->createUrl('Item/SelectItem/'),
-        'class'=>'update-dialog-open-link',
-        'data-update-dialog-title' => Yii::t('app','select items'),
-    )); */ ?>
-    
-<?php $this->endWidget(); ?>
-</div>    
-</div>
-
-<?php $this->endWidget(); ?>
-
 <?php if ($first_load=='Y') { ?>
     <?php Yii::app()->clientScript->registerScript('setFocus', '$("#SaleItem_client_id").focus();'); ?>
 <?php } else {  ?>
     <?php Yii::app()->clientScript->registerScript('setFocus', '$("#SaleItem_item_id").focus();'); ?>
 <?php } ?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'deleteItem', "
+<?php
+Yii::app()->clientScript->registerScript( 'deleteItem', "
         jQuery( function($){
             $('div#grid_cart').on('click','a.delete-item',function(e) {
                 e.preventDefault();
@@ -87,10 +21,10 @@
                 });
         });
       ");
- ?>  
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'addPayment', "
+<?php
+Yii::app()->clientScript->registerScript( 'addPayment', "
         jQuery( function($){
             $('#payment_cart').on('click','a.add-payment',function(e) {
                 e.preventDefault();
@@ -111,7 +45,7 @@
                 });
         });
       ");
- ?>  
+?>
 
 <?php /*
     Yii::app()->clientScript->registerScript( 'addPayment', "
@@ -123,7 +57,7 @@
                 var payment_id=$('#payment_type_id').val();
                 var currency=". CJavaScript::encode($currency) . ";
                 for (var i=0; i < currency.length; i++) {
-                    console.log(payment_amount_ + i); 
+                    console.log(payment_amount_ + i);
                     //var payment_amount_ + i = $('#payment_amount_' + currency[i]);
                 }
                 var payment_amount=$('#thb_payment_amount_id').val();
@@ -141,16 +75,16 @@
                 });
         });
       ");
-    * 
+    *
     */
- ?>  
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'enterPayment', "
+<?php
+Yii::app()->clientScript->registerScript( 'enterPayment', "
         jQuery( function($){
             $('#payment_cart').on('keypress','.payment-amount-txt',function(e) {
                 if (e.keyCode === 13 || e.which === 13)
-                {    
+                {
                     e.preventDefault();
                     var url=$(this).data('url');
                     var message=$('.message');
@@ -172,10 +106,10 @@
              });
         });
       ");
- ?>  
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'deletePayment', "
+<?php
+Yii::app()->clientScript->registerScript( 'deletePayment', "
         jQuery( function($){
             $('#payment_cart').on('click','a.delete-payment',function(e) {
                 e.preventDefault();
@@ -191,10 +125,10 @@
                 });
         });
       ");
- ?>  
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'setComment', "
+<?php
+Yii::app()->clientScript->registerScript( 'setComment', "
         jQuery( function($){
             $('div#comment_content').on('change','#comment_id',function(e) {
                 e.preventDefault();
@@ -211,8 +145,8 @@
                  });
             });
         });
-      "); 
- ?> 
+      ");
+?>
 
 <?php /*
     Yii::app()->clientScript->registerScript( 'paymentOption', "
@@ -227,12 +161,12 @@
             });
         });
       ");
- * 
- */ 
- ?> 
+ *
+ */
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'selectProduct', "
+<?php
+Yii::app()->clientScript->registerScript( 'selectProduct', "
         jQuery( function($){
             $('div#product_show').on('click','a.list-product',function(e) {
                 e.preventDefault();
@@ -261,7 +195,7 @@
                                     }
                                     remote.select2('open');
                                 }
-                                else 
+                                else
                                 {
                                   alert('something worng');
                                   return false;
@@ -271,10 +205,10 @@
              });
          });
       ");
- ?> 
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'priceTierOption', "
+<?php
+Yii::app()->clientScript->registerScript( 'priceTierOption', "
         jQuery( function($){
             $('div#client_cart').on('change','#price_tier_id',function(e) {
                 e.preventDefault();
@@ -291,10 +225,10 @@
                 });
             });
       ");
- ?> 
+?>
 
-<?php 
-    Yii::app()->clientScript->registerScript( 'currencyTypeOption', "
+<?php
+Yii::app()->clientScript->registerScript( 'currencyTypeOption', "
         jQuery( function($){
             $('div#payment_cart').on('change','#currency_type_id',function(e) {
                 e.preventDefault();
@@ -311,119 +245,118 @@
                 });
             });
       ");
- ?> 
+?>
 
 <?php if  (Yii::app()->settings->get('sale', 'disableConfirmation')=='1') { ?>
     <script>
-    $(document).ready(function()
-    {
-         $('#payment_cart').on('click','a.complete-sale',function(e) {
-            e.preventDefault();
-            $("#finish_sale_button").hide();
-            $('#finish_sale_form').submit();
+        $(document).ready(function()
+        {
+            $('#payment_cart').on('click','a.complete-sale',function(e) {
+                e.preventDefault();
+                $("#finish_sale_button").hide();
+                $('#finish_sale_form').submit();
+            });
         });
-     });
     </script>
 <?php } else { ?>
     <script>
-    $(document).ready(function()
-    {
-         $('#payment_cart').on('click','a.complete-sale',function(e) {
-            e.preventDefault();
-            $("#finish_sale_button").hide();
-            if (confirm("<?php echo Yii::t('app','Are you sure you want to submit this sale? This cannot be undone.'); ?>")){
-                $('#finish_sale_form').submit();
-            } else { //Bring back submit and unmask if fail to confirm
-                $("#finish_sale_button").show();
-            }
+        $(document).ready(function()
+        {
+            $('#payment_cart').on('click','a.complete-sale',function(e) {
+                e.preventDefault();
+                $("#finish_sale_button").hide();
+                if (confirm("<?php echo Yii::t('app','Are you sure you want to submit this sale? This cannot be undone.'); ?>")){
+                    $('#finish_sale_form').submit();
+                } else { //Bring back submit and unmask if fail to confirm
+                    $("#finish_sale_button").show();
+                }
+            });
         });
-     });
     </script>
 <?php } ?>
 
 <script>
-    
-var submitting = false;  
 
-$(document).ready(function()
-{   
-    //Here just in case the loader doesn't go away for some reason
-    $('.waiting').hide();
-    
-    // ajaxForm to ensure is submitting as Ajax even user press enter key
-    $('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
-        
-    $('.line_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});  
-    
-    $('#total_discount_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit}); 
-    
-    $('#suspend_sale_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});  
-        
-    $('#cart_contents').on('change','input.input-grid',function(e) {
-        e.preventDefault();
-        $(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit });
-    });
-    
-    $('#cancel_cart').on('click','a.suspend-sale',function(e) {
-        e.preventDefault();
-        if (confirm("<?php echo Yii::t('app','Are you sure you want to suspend this sale?'); ?>")){
-              $('#suspend_sale_form').submit();
-        } 
-   });
-   
-   $('#cancel_cart').on('click','a.cancel-sale',function(e) {
-      e.preventDefault();
-      if (confirm("<?php echo Yii::t('app','Are you sure you want to clear this sale? All items will cleared.'); ?>")){
-            $('#suspend_sale_form').attr('action', '<?php echo Yii::app()->createUrl('wholeSale/cancelSale/'); ?>');
-            $('#suspend_sale_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
-        } 
-   });
-   
-   $('#client_cart').on('click','a.detach-customer', function(e) {
-        e.preventDefault();
-        $('#client_selected_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
-    });
-    
-    $('#total_discount_cart').on('change','input.input-totaldiscount',function(e) {
-        e.preventDefault();
-        $(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit });
-    });
+    var submitting = false;
 
-});
-
-function salesBeforeSubmit(formData, jqForm, options)
-{
-    if (submitting)
+    $(document).ready(function()
     {
-        return false;
-    }
-    submitting = true;
-    $('.waiting').show();
-}   
+        //Here just in case the loader doesn't go away for some reason
+        $('.waiting').hide();
 
-function itemScannedSuccess(responseText, statusText, xhr, $form)
-{
-    //$('.waiting').hide();
-    setTimeout(function(){$('#SaleItem_item_id').focus();}, 10);
-} 
+        // ajaxForm to ensure is submitting as Ajax even user press enter key
+        $('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
+
+        $('.line_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+
+        $('#total_discount_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+
+        $('#suspend_sale_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+
+        $('#cart_contents').on('change','input.input-grid',function(e) {
+            e.preventDefault();
+            $(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit });
+        });
+
+        $('#cancel_cart').on('click','a.suspend-sale',function(e) {
+            e.preventDefault();
+            if (confirm("<?php echo Yii::t('app','Are you sure you want to suspend this sale?'); ?>")){
+                $('#suspend_sale_form').submit();
+            }
+        });
+
+        $('#cancel_cart').on('click','a.cancel-sale',function(e) {
+            e.preventDefault();
+            if (confirm("<?php echo Yii::t('app','Are you sure you want to clear this sale? All items will cleared.'); ?>")){
+                $('#suspend_sale_form').attr('action', '<?php echo Yii::app()->createUrl('wholeSale/cancelSale/'); ?>');
+                $('#suspend_sale_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+            }
+        });
+
+        $('#client_cart').on('click','a.detach-customer', function(e) {
+            e.preventDefault();
+            $('#client_selected_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+        });
+
+        $('#total_discount_cart').on('change','input.input-totaldiscount',function(e) {
+            e.preventDefault();
+            $(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit });
+        });
+
+    });
+
+    function salesBeforeSubmit(formData, jqForm, options)
+    {
+        if (submitting)
+        {
+            return false;
+        }
+        submitting = true;
+        $('.waiting').show();
+    }
+
+    function itemScannedSuccess(responseText, statusText, xhr, $form)
+    {
+        //$('.waiting').hide();
+        setTimeout(function(){$('#SaleItem_item_id').focus();}, 10);
+    }
 
 </script>
 
 <script type="text/javascript" language="javascript">
-$(document).keydown(function(event)
-{
-    var mycode = event.keyCode;
-    //console.log(mycode);
-    //F1
-    if ( mycode === 112) {
-        $('#payment_amount_id').focus();
-        $('#payment_amount_id').select();
-    }
-    
-    //ESC
-    if ( mycode === 27) {
-        $("#cancel_sale_button").focus();
-    }
-});
+    $(document).keydown(function(event)
+    {
+        var mycode = event.keyCode;
+        //console.log(mycode);
+        //F1
+        if ( mycode === 112) {
+            $('#payment_amount_id').focus();
+            $('#payment_amount_id').select();
+        }
+
+        //ESC
+        if ( mycode === 27) {
+            $("#cancel_sale_button").focus();
+        }
+    });
 </script>
- 

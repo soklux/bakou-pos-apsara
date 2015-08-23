@@ -1,5 +1,5 @@
 <?php
-/* Khmer Lanaguage */
+/* Menu Section */
 return array(
     'Customer' => 'អតិថិជន',
     'Item' => 'ទំនិញ',
@@ -23,4 +23,3 @@ return array(
     'Adjustment Out'=>'បន្ថយ',
     'About US'=>'អំពីយើងខ្ញុំ',
 );
-?>

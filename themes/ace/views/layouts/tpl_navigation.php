@@ -113,7 +113,7 @@
                         <li class="white">
                             <a href="<?php echo Yii::app()->createUrl('site/logout'); ?>">
                                 <i class="ace-icon fa fa-power-off"></i>
-                                Logout
+                                <?= Yii::t('app','Logout'); ?>
                             </a>
                         </li>
                         
@@ -146,7 +146,7 @@
                                     <li>
                                         <a href="<?php echo Yii::app()->urlManager->createUrl('RbacUser/Update', array('id' => Yii::app()->user->id)); ?>">
                                                 <i class="ace-icon fa fa-key"></i>
-                                                Change Password
+                                                <?= Yii::t('app','Change Password'); ?>
                                         </a>
                                     </li>
 

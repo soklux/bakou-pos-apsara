@@ -4,7 +4,7 @@
             $(function(){
                 $.gritter.add({
                     title: '<?= ucfirst($key); ?>',
-                    text: '<?= $message; ?>',
+                    text: '<?= Yii::t('app',$message); ?>',
                     image: '<?= Yii::app()->theme->baseUrl ?>/avatars/avatar3.png',
                     sticky: true,
                     time: '10',

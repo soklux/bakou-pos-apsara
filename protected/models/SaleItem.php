@@ -101,8 +101,9 @@ class SaleItem extends CActiveRecord
 			'price' => 'Price', // Yii::t('app','model.saleitem.price'), //
 			'discount_amount' => Yii::t('app','model.saleitem.discount_amount'), // 'Discount Amount',
 			'discount_type' => Yii::t('app','model.saleitem.discount_type'),//'Discount Type',
-                        'name' => Yii::t('app','model.saleitem.name'),
-                        'payment_type' => Yii::t('app','model.saleitem.paymentype'),
+			'name' => Yii::t('app','model.saleitem.name'),
+			'payment_type' => Yii::t('app','model.saleitem.paymentype'),
+			'tier_id' => Yii::t('app','Price Tier'),
 		);
 	}
 

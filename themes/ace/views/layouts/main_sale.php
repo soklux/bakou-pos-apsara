@@ -42,6 +42,7 @@
     
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery.gritter.css" />
     
     <!-- ace settings handler -->
     <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
@@ -50,7 +51,7 @@
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery-ui.custom.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.ui.touch-punch.min.js',CClientScript::POS_END);
-        //$cs->registerScriptFile($baseUrl.'/js/jquery.gritter.min.js',CClientScript::POS_END);
+        $cs->registerScriptFile($baseUrl.'/js/jquery.gritter.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.slimscroll.min.js',CClientScript::POS_END); 
         //$cs->registerScriptFile($baseUrl.'/js/jquery.bxslider.min.js',CClientScript::POS_END); 
         //$cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
@@ -104,22 +105,11 @@
         <!-- /section:basics/sidebar.horizontal -->
         <div class="main-content">
             <div class="breadcrumbs" id="breadcrumbs">
-                    <?php if(isset($this->breadcrumbs)):?>
-                          <?php $this->widget('bootstrap.widgets.TbBreadcrumb', array(
-                                'links' => $this->breadcrumbs,
-                          )); ?>
-                    <?php endif?>
-               
-                    <!--
-                    <div class="nav-search" id="nav-search">
-                        <form class="form-search" />
-                                <span class="input-icon">
-                                        <input type="text" placeholder="Search ..." class="input-small nav-search-input" id="nav-search-input" autocomplete="off" />
-                                        <i class="icon-search nav-search-icon"></i>
-                                </span>
-                        </form>
-                    </div>
-                    -->
+                <?php if(isset($this->breadcrumbs)):?>
+                      <?php $this->widget('bootstrap.widgets.TbBreadcrumb', array(
+                            'links' => $this->breadcrumbs,
+                      )); ?>
+                <?php endif?>
             </div> 
 
             <div class="page-content">
@@ -131,7 +121,7 @@
                 </div>
             </div>
 
-        <!--</div> --><!--/.main-content-->
+        </div> <!--/.main-content-->
 
         <!-- Require the footer -->
         <?php require_once('tpl_footer.php')?>
@@ -139,9 +129,8 @@
         <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
             <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
         </a>
-            
+
     </div><!--/.main-container-->
- 
-   
-  </body>
+
+</body>
 </html>

@@ -114,14 +114,13 @@ $this->breadcrumbs = array(
                     'value' => '$data->status=="1" ? $data->address1 : "<span class=\"text-muted\">  $data->address1 <span>"',
                     'type' => 'raw',
                 ),
-                array(
+                /*array(
                     'name' => 'balance',
                     'header' => 'Balance',
                     'value' => array($this, "gridBalance"),
                     'visible' => Yii::app()->user->checkAccess("payment.index"),
                     'type' => 'raw',
-                ),
-                
+                ),*/
             ),
         )); ?>
 

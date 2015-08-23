@@ -42,7 +42,7 @@ $('.search-form form').submit(function(){
 
 <?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
 
-<?php echo TbHtml::linkButton(Yii::t( 'app', 'form.button.addnew' ),array(
+<?php echo TbHtml::linkButton(Yii::t( 'app', 'Add New' ),array(
         'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
         'size'=>TbHtml::BUTTON_SIZE_SMALL,
         'icon'=>'ace-icon fa fa-plus white',

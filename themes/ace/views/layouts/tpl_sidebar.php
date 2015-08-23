@@ -38,27 +38,29 @@ $this->widget('bootstrap.widgets.TbNav', array(
              * 
             */
             //array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('menu', 'Payment')). '</span>', 'icon'=>'menu-icon fa fa-heart', 'url'=>Yii::app()->urlManager->createUrl('sale/Invoice'), 'active'=>$this->id .'/'. $this->action->id=='sale/Invoice','visible'=>Yii::app()->user->checkAccess('payment.index')),
-            //array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('menu', 'Sale')). '</span>', 'icon'=>'menu-icon fa fa-shopping-cart', 'url'=>Yii::app()->urlManager->createUrl('saleItem/index'), 'active'=>$this->id .'/'. $this->action->id=='saleItem/index',
-            //    'visible'=> Yii::app()->user->checkAccess('sale.edit') || Yii::app()->user->checkAccess('sale.discount') || Yii::app()->user->checkAccess('sale.editprice') ),
-            array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Whole Sale')). '</span>', 'icon'=>'menu-icon fa fa-shopping-cart', 'url'=>Yii::app()->urlManager->createUrl('wholeSale/index'), 'active'=>$this->id .'/'. $this->action->id=='wholeSale/index',
+            array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Retail')). '</span>', 'icon'=>'menu-icon fa fa-shopping-cart', 'url'=>Yii::app()->urlManager->createUrl('saleItem/index'),
+                'active'=>$this->id .'/'. $this->action->id=='saleItem/index',
+                'visible'=> Yii::app()->user->checkAccess('sale.edit') || Yii::app()->user->checkAccess('sale.discount') || Yii::app()->user->checkAccess('sale.editprice') ),
+            array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Wholesale')). '</span>', 'icon'=>'menu-icon fa fa-shopping-cart', 'url'=>Yii::app()->urlManager->createUrl('wholeSale/index'),
+                'active'=>$this->id .'/'. $this->action->id=='wholeSale/index',
                 'visible'=> Yii::app()->user->checkAccess('sale.edit') || Yii::app()->user->checkAccess('sale.discount') || Yii::app()->user->checkAccess('sale.editprice') ),
             array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Payment')) . '</span>', 'icon'=>'menu-icon fa fa-credit-card', 'url'=>Yii::app()->urlManager->createUrl('salePayment/index'), 'active'=>$this->id .'/'. $this->action->id=='salePayment/index','visible'=>Yii::app()->user->checkAccess('payment.index')),
             array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Report')) .'</span>', 'icon'=>'menu-icon fa fa-signal', 'url'=>Yii::app()->urlManager->createUrl('report/reporttab'),'active'=>$this->id =='report',
                            'visible'=> Yii::app()->user->checkAccess('report.index') || Yii::app()->user->checkAccess('invoice.index') || Yii::app()->user->checkAccess('invoice.print') || Yii::app()->user->checkAccess('invoice.delete') || Yii::app()->user->checkAccess('invoice.update') ,
                 'items'=>array(
-                    array('label'=> Yii::t('app','Sale Invoices'),'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/SaleInvoice'), 'active'=>$this->id .'/'. $this->action->id =='report/SaleInvoice',
+                    array('label'=> Yii::t('app','Sale Invoice'),'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/SaleInvoice'), 'active'=>$this->id .'/'. $this->action->id =='report/SaleInvoice',
                         'visible'=> Yii::app()->user->checkAccess('invoice.index') || Yii::app()->user->checkAccess('invoice.print') || Yii::app()->user->checkAccess('invoice.delete') || Yii::app()->user->checkAccess('invoice.update')
                     ),
                     array('label'=> Yii::t('app','Sale Item Summary'),'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/SaleItemSummary'), 'active'=>$this->id .'/'. $this->action->id =='report/SaleItemSummary',
                         'visible'=> Yii::app()->user->checkAccess('report.index') 
                     ),
-                    array('label'=> Yii::t('app','Sales Reports'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/SaleReportTab'),'active'=>$this->id .'/'. $this->action->id =='report/SaleReportTab',
+                    array('label'=> Yii::t('app','Sale Report'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/SaleReportTab'),'active'=>$this->id .'/'. $this->action->id =='report/SaleReportTab',
                         'visible'=> Yii::app()->user->checkAccess('report.index') 
                     ),
                     array('label'=> Yii::t('app','Item Expiry'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/itemExpiry'),'active'=>$this->id .'/'. $this->action->id =='report/itemExpiry',
                         'visible'=> Yii::app()->user->checkAccess('report.index')  || Yii::app()->settings->get('item', 'itemExpireDate')=='1' 
                         ),
-                    array('label'=> Yii::t('app','Inventories'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/Inventory'),'active'=>$this->id .'/'. $this->action->id =='report/Inventory',
+                    array('label'=> Yii::t('app','Inventory'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/Inventory'),'active'=>$this->id .'/'. $this->action->id =='report/Inventory',
                         'visible'=> Yii::app()->user->checkAccess('report.index') 
                     ),
                    /*array('label'=>Yii::t('app','Stock Count'), 'icon'=> 'menu-icon fa fa-caret-right', 'url'=>Yii::app()->urlManager->createUrl('report/StockCount'),'active'=>$this->id .'/'. $this->action->id =='report/StockCount',
@@ -75,7 +77,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     ),
             )),
             array('label'=>'<span class="menu-text">'. strtoupper(Yii::t('menu','PIM')) . '</span>', 'icon'=>'menu-icon fa fa-group','url'=>Yii::app()->urlManager->createUrl('client/admin'),
-                           'active'=>$this->id=='employee' || $this->id=='supplier' || $this->id=='client' || $this->id=='publisher',
+                           'active'=>$this->id=='employee' || $this->id=='supplier' || $this->id=='client' || $this->id=='publisher' || $this->id=='author',
                            'visible'=> Yii::app()->user->checkAccess('store.update') || Yii::app()->user->checkAccess('employee.index') || Yii::app()->user->checkAccess('client.index'),
                            'items'=>array(
                                array('label'=>Yii::t('app', 'Customer') , 'icon'=> TbHtml::ICON_USER, 'url'=>Yii::app()->urlManager->createUrl('client/admin'),
@@ -95,11 +97,12 @@ $this->widget('bootstrap.widgets.TbNav', array(
                                    'active'=>$this->id == 'publisher',
                                    'visible'=> Yii::app()->user->checkAccess('supplier.index') || Yii::app()->user->checkAccess('supplier.create') || Yii::app()->user->checkAccess('supplier.update') || Yii::app()->user->checkAccess('supplier.delete')
                                ),
-                               array('label'=>Yii::t('app', 'Author'), 'icon'=> TbHtml::ICON_USER, 'url'=>Yii::app()->urlManager->createUrl('author/admin'), 'active'=>$this->id .'/'. $this->action->id=='author/admin','visible'=>Yii::app()->user->checkAccess('supplier.index'),
+                               array('label'=>Yii::t('app', 'Author'), 'icon'=> TbHtml::ICON_USER, 'url'=>Yii::app()->urlManager->createUrl('author/admin'),
+                                   'active' => $this->id  == 'author',
                                    'visible'=> Yii::app()->user->checkAccess('supplier.index') || Yii::app()->user->checkAccess('supplier.create') || Yii::app()->user->checkAccess('supplier.update') || Yii::app()->user->checkAccess('supplier.delete')
                                ),
             )),
-            array('label'=>'<span class="menu-text">'. strtoupper(Yii::t('menu','Settings')) . '</span>', 'icon'=>'menu-icon fa fa-cogs','url'=>Yii::app()->urlManager->createUrl('settings/index'),
+            array('label'=>'<span class="menu-text">'. strtoupper(Yii::t('app','Settings')) . '</span>', 'icon'=>'menu-icon fa fa-cogs','url'=>Yii::app()->urlManager->createUrl('settings/index'),
                            'active'=>$this->id=='priceTier' || strtolower($this->id)=='default' || $this->id=='store' || $this->id=='settings' || $this->id=='location' || $this->id=='profitMargin',
                            'visible'=>Yii::app()->user->checkAccess('store.update'),
                            'items'=>array(

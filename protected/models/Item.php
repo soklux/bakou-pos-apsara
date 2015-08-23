@@ -299,14 +299,14 @@ class Item extends CActiveRecord
 
         // Recommended: Secure Way to Write SQL in Yii
         $sql = 'SELECT id ,concat_ws(" : ",name,unit_price) AS text
-                    FROM item 
-                    WHERE name LIKE :item_name
-                    AND status=:status
-                    UNION ALL
-                    SELECT id ,concat_ws(" : ",name,unit_price) AS text
-                    FROM item
-                    WHERE item_number=:item_number
-                    AND status=:status';
+                FROM item
+                WHERE name LIKE :item_name
+                AND status=:status
+                UNION ALL
+                SELECT id ,concat_ws(" : ",name,unit_price) AS text
+                FROM item
+                WHERE item_number=:item_number
+                AND status=:status';
 
         $item_name = '%' . $name . '%';
         $item_number = $name;
@@ -379,7 +379,6 @@ class Item extends CActiveRecord
         return $cost;
     }
 
-
     public function getItemPriceTier($item_id, $price_tier_id)
     {
         $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
@@ -395,6 +394,63 @@ class Item extends CActiveRecord
         if (!is_numeric($item_id)) {
             $item_id = 'NULL';
         }
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':item_id' => $item_id,
+                ':price_tier_id' => $price_tier_id,
+                ':status' => $this->_active_status,
+            )
+        );
+
+        return $result;
+    }
+
+    /* Retail Sale Item Cart */
+    public function getItemPriceTierRS($item_id, $price_tier_id)
+    {
+        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
+                    concat(i.currency_symbol,
+                    CASE WHEN ipt.`price` IS NOT NULL THEN FORMAT(ipt.`price`,2)
+                        ELSE FORMAT(i.`unit_price`,2)
+                    END,' * ',FORMAT(i.to_val,0)) price_verify,
+                    CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price` * i.to_val
+                        ELSE i.`unit_price` * i.to_val
+                    END unit_price,
+                    i.`description`
+                FROM `v_item_kh` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
+                        AND ipt.`price_tier_id`=:price_tier_id
+                WHERE i.id=:item_id
+                AND status=:status";
+
+        if (!is_numeric($item_id)) {
+            $item_id = 'NULL';
+        }
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':item_id' => $item_id,
+                ':price_tier_id' => $price_tier_id,
+                ':status' => $this->_active_status,
+            )
+        );
+
+        return $result;
+    }
+
+    public function getItemPriceTierItemNumRS($item_id, $price_tier_id)
+    {
+        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
+                    concat(i.currency_symbol,
+                    CASE WHEN ipt.`price` IS NOT NULL THEN FORMAT(ipt.`price`,2)
+                        ELSE FORMAT(i.`unit_price`,2)
+                    END,' * ',FORMAT(i.to_val,0)) price_verify,
+                    CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price` * i.to_val
+                        ELSE i.`unit_price` * i.to_val
+                    END unit_price,
+                    i.`description`
+            FROM `v_item_kh` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
+                    AND ipt.`price_tier_id`=:price_tier_id
+            WHERE i.item_number=:item_id
+            AND status=:status";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
@@ -425,28 +481,6 @@ class Item extends CActiveRecord
         if (!is_numeric($item_id)) {
             $item_id = 'NULL';
         }
-
-        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                ':item_id' => $item_id,
-                ':price_tier_id' => $price_tier_id,
-                ':status' => $this->_active_status,
-            )
-        );
-
-        return $result;
-    }
-
-    public function getItemPriceTierItemNum($item_id, $price_tier_id)
-    {
-        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
-                    CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price`
-                        ELSE i.`unit_price`
-                    END unit_price,
-                    i.`description`
-            FROM `item` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
-                    AND ipt.`price_tier_id`=:price_tier_id
-            WHERE i.item_number=:item_id
-            AND status=:status";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,

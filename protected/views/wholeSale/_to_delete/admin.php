@@ -1,4 +1,5 @@
-<div id="register_container">    
+<div id="register_container">
+
 <div class="col-xs-12 col-sm-8 widget-container-col">
     <div class="message expire_date" style="display:none">
         <div class="alert in alert-block fade alert-success">Transaction Failed !</div>

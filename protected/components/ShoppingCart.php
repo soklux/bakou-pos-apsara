@@ -238,12 +238,11 @@ class ShoppingCart extends CApplicationComponent
         //Get all items in the cart so far...
         $items = $this->getCart();
 
-        //$model = Item::model()->findbyPk($item_id);
-        $models = Item::model()->getItemPriceTier($item_id, $this->getPriceTier());
+        $models = Item::model()->getItemPriceTierRS($item_id, $this->getPriceTier());
            
         //try to get item id given an item_number
         if (empty($models)) {
-            $models = Item::model()->getItemPriceTierItemNum($item_id, $this->getPriceTier());
+            $models = Item::model()->getItemPriceTierItemNumRS($item_id, $this->getPriceTier());
             foreach ($models as $model) {
                 $item_id=$model["id"];
             }
@@ -258,9 +257,13 @@ class ShoppingCart extends CApplicationComponent
             $item_data = array((int)$item_id =>
                 array(
                     'item_id' => $model["id"],
+                    'currency_code' => $model["currency_code"],
+                    'currency_id' => $model["currency_id"],
+                    'currency_symbol' => $model["currency_symbol"],
                     'name' => $model["name"],
                     'item_number' => $model["item_number"],
                     'quantity' => $quantity,
+                    'price_verify' => $model["price_verify"],
                     'price' => $price!= null ? round($price, $this->getDecimalPlace()) : round($model["unit_price"], $this->getDecimalPlace()),
                     'discount' => $discount,
                     'expire_date' => $expire_date,
@@ -286,10 +289,11 @@ class ShoppingCart extends CApplicationComponent
         $items = $this->getCart();
         
         foreach ($items as $item) {
-            $models = Item::model()->getItemPriceTier($item['item_id'], $this->getPriceTier());
+            $models = Item::model()->getItemPriceTierRS($item['item_id'], $this->getPriceTier());
             foreach ($models as $model) {
                if (isset($items[$item['item_id']])) {
                     $items[$item['item_id']]['price'] = round($model['unit_price'], $this->getDecimalPlace());
+                    $items[$item['item_id']]['price_verify'] = $model['price_verify'];
                }
             }
         }    

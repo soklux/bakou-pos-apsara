@@ -88,7 +88,7 @@ $this->breadcrumbs = array(
                     ),
                     array(
                         'name' => 'name',
-                        'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("item/updateImage",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->name <span>" ',
+                        'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("item/updateImage",array("id"=>$data->primaryKey))) : "<s class=\"red\">  $data->name </s>" ',
                         'type' => 'raw',
                     ),
                     array(
@@ -136,12 +136,12 @@ $this->breadcrumbs = array(
                         'headerHtmlOptions'=>array('class'=>'hidden-480 hidden-xs hidden-md'),
                         'htmlOptions'=>array('class' => 'hidden-480 hidden-xs hidden-md'),
                     ),
-                    array(
+                    /*array(
                         'name' => 'status',
                         'type' => 'raw',
                         'value' => '$data->status==1 ? TbHtml::labelTb("Active", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("De-Activated", array("color" => TbHtml::LABEL_COLOR_WARNING))',
                         'filter' => '',
-                    ),
+                    ),*/
                     array(
                         'class' => 'bootstrap.widgets.TbButtonColumn',
                         'template' => '<div class="btn-group">{detail}{cost}{price}{delete}{undeleted}</div>',
@@ -152,10 +152,11 @@ $this->breadcrumbs = array(
                                 'url' => 'Yii::app()->createUrl("Inventory/admin", array("item_id"=>$data->id))',
                                 'options' => array(
                                     'data-toggle' => 'tooltip',
-                                    'data-update-dialog-title' => 'Stock History',
+                                    'data-update-dialog-title' => Yii::t('app','Stock History'),
                                     'class' => 'btn btn-xs btn-pink',
-                                    'title' => 'Stock History',
+                                    'title' => Yii::t('app','Stock History'),
                                 ),
+                                'visible' => '$data->status=="1"',
                             ),
                             'cost' => array(
                                 'click' => 'updateDialogOpen',
@@ -164,9 +165,9 @@ $this->breadcrumbs = array(
                                 'options' => array(
                                     'data-update-dialog-title' => Yii::t('app', 'Cost History'),
                                     'class' => 'btn btn-xs btn-info',
-                                    'title' => 'Cost History',
+                                    'title' => Yii::t('app', 'Cost History'),
                                 ),
-                                'visible' => 'Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update")',
+                                'visible' => '$data->status=="1" && ( Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update") )',
                             ),
                             'price' => array(
                                 'click' => 'updateDialogOpen',
@@ -176,9 +177,9 @@ $this->breadcrumbs = array(
                                 'options' => array(
                                     'data-update-dialog-title' => Yii::t('app', 'Price History'),
                                     'class' => 'btn btn-xs btn-success',
-                                    'title' => 'Price History',
+                                    'title' => Yii::t('app', 'Price History'),
                                 ),
-                                'visible' => 'Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update")',
+                                'visible' => '$data->status=="1" && ( Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update") )',
                             ),
                             /*
                             'edit' => array(
@@ -193,7 +194,7 @@ $this->breadcrumbs = array(
                              *
                             */
                             'delete' => array(
-                                'label' => Yii::t('app', 'Delete Item'),
+                                'label' => Yii::t('app', 'Delete'),
                                 'icon' => 'bigger-120 glyphicon-trash',
                                 'options' => array(
                                     'class' => 'btn btn-xs btn-danger',
@@ -201,11 +202,12 @@ $this->breadcrumbs = array(
                                 'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
                             ),
                             'undeleted' => array(
-                                'label' => Yii::t('app', 'Undo Delete Item'),
+                                'label' => Yii::t('app', 'Undo Delete'),
                                 'url' => 'Yii::app()->createUrl("Item/UndoDelete", array("id"=>$data->id))',
                                 'icon' => 'bigger-120 glyphicon-refresh',
                                 'options' => array(
                                     'class' => 'btn btn-xs btn-warning btn-undodelete',
+                                    'title' => Yii::t('app', 'Undo Delete'),
                                 ),
                                 'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
                             ),
